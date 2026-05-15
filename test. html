@@ -1,0 +1,9 @@
+<html>
+<head>
+<title>Test Page</title>
+</head>
+<body style="background:white;color:black;padding:50px;font-size:24px;">
+<div>TEST PAGE - If this text is black and background is white, the browser works.</div>
+<div style="margin-top:20px;padding:20px;background:#0a0a0f;color:white;">DARK MODE - If this is dark with white text.</div>
+</body>
+</html>
