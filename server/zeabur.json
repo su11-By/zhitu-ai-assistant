@@ -1,0 +1,16 @@
+{
+  "name": "zhitu-ai",
+  "runtime": "python",
+  "build": "cd server && pip install -r requirements.txt",
+  "start": "cd server && gunicorn app:app --bind 0.0.0.0:$PORT --workers 2",
+  "env": {
+    "JWT_SECRET": {
+      "description": "JWT 密钥",
+      "required": true
+    },
+    "NODE_ENV": {
+      "description": "环境",
+      "value": "production"
+    }
+  }
+}
