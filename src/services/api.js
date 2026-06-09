@@ -1,3 +1,4 @@
+// 直接调用 DeepSeek API（公网部署时使用）
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
 
 let _getApiKey = null
