@@ -108,7 +108,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
       })
 
       if (chunkRecords.length === 0) {
-        throw new Error('所有分块嵌入失败，请检查 LM Studio 是否运行了嵌入模型 (nomic-embed-text-v1.5)')
+        throw new Error('所有分块嵌入失败，请检查文档内容是否有效')
       }
 
       await vectorStore.insertChunks(chunkRecords)

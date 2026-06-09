@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit'
 import * as cheerio from 'cheerio'
 
 // ── Config ──────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3004
 const SEARCH_TIMEOUT = 15_000
 const FETCH_TIMEOUT = 10_000
 const MAX_BODY_SIZE = '2mb'
@@ -19,6 +19,18 @@ const app = express()
 
 // Trust proxy for rate limiting behind reverse proxies
 app.set('trust proxy', 1)
+
+// ── CORS Middleware ─────────────────────────────────────────────────
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200)
+  }
+  next()
+})
 
 // ── Middleware ──────────────────────────────────────────────────────
 app.use(helmet({
@@ -142,6 +154,67 @@ app.get('/fetch/:encodedUrl', fetchLimiter, async (req, res, next) => {
       return res.status(504).json({ error: '请求超时' })
     }
     next(e)
+  }
+})
+
+// ── DeepSeek AI proxy ────────────────────────────────────────────────
+const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
+
+const aiLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'AI 请求过于频繁，请稍后重试' }
+})
+
+app.all('/ai/:path(*)', aiLimiter, async (req, res, next) => {
+  const targetPath = req.params.path || ''
+  const targetUrl = `${DEEPSEEK_BASE_URL}/${targetPath}`
+  
+  console.log(`[AI Proxy] Request: ${req.method} /ai/${targetPath}`)
+  console.log(`[AI Proxy] Forwarding to: ${targetUrl}`)
+
+  try {
+    const headers = {
+      'Content-Type': req.headers['content-type'] || 'application/json',
+      ...(req.headers.authorization && { 'Authorization': req.headers.authorization })
+    }
+
+    const fetchOptions = {
+      method: req.method,
+      headers,
+      signal: AbortSignal.timeout(60000)
+    }
+
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      fetchOptions.body = JSON.stringify(req.body)
+    }
+
+    const response = await fetch(targetUrl, fetchOptions)
+
+    res.status(response.status)
+    const contentType = response.headers.get('content-type')
+    if (contentType) {
+      res.setHeader('Content-Type', contentType)
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      res.write(decoder.decode(value, { stream: true }))
+    }
+
+    res.end()
+  } catch (e) {
+    if (e.name === 'AbortError' || e.name === 'TimeoutError') {
+      return res.status(504).json({ error: 'AI 请求超时' })
+    }
+    console.error('[DeepSeek Proxy Error]', e.message)
+    res.status(502).json({ error: '无法连接到 AI 服务' })
   }
 })
 

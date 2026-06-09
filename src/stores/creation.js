@@ -74,7 +74,7 @@ export const useCreationStore = defineStore('creation', () => {
       })
       saveHistory()
     } catch (e) {
-      error.value = e.message || '生成失败，请检查 LM Studio 是否在运行'
+      error.value = e.message || '生成失败，请检查 DeepSeek API Key 是否已配置'
     } finally {
       isGenerating.value = false
     }

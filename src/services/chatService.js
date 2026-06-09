@@ -38,7 +38,7 @@ function generateSkillMockResponse(skill, userQuestion) {
   }
 
   const body = skillSpecific[skill.id] || `我正在以 ${skill.name} 专家的身份为您服务。请告诉我更多关于您需求的具体信息，我会给出专业的建议！`
-  return intro + questionRef + body + '\n\n---\n*💡 提示：LM Studio 未连接，当前为本地模拟响应。请确认 LM Studio 已启动并加载模型。*'
+  return intro + questionRef + body + '\n\n---\n*💡 提示：DeepSeek API 未连接，当前为本地模拟响应。请确认已在个人中心配置 API Key。*'
 }
 
 function generateMockResponse(messages) {
@@ -51,7 +51,7 @@ function generateMockResponse(messages) {
     return '您好！我是智途 AI 助手。我可以帮助您：\n\n**1. 日常对话** - 回答各种问题，聊天交流\n**2. 知识库问答** - 上传文档后基于文档内容进行问答\n**3. 联网搜索** - 获取最新的网络信息\n**4. 内容创作** - 总结、润色、扩写各种文本\n**5. AI 技能** - 品牌设计、Logo 设计、PRD 文档等专业服务\n\n请问有什么我可以帮助您的？'
   }
 
-  return `收到您的问题：*"${userQuestion}"*\n\n这是一个很好的问题！当前 LM Studio 未连接，我使用本地模拟响应来演示功能。\n\n连接 LM Studio 并加载模型后，我将能够：\n- 基于您的具体问题给出深度回答\n- 结合知识库文档进行 RAG 问答\n- 搜索网络获取最新信息\n- 使用专业技能提供专业服务\n\n---\n*💡 提示：LM Studio 未连接，当前为本地模拟响应。请确认 LM Studio 已启动并加载模型。*`
+  return `收到您的问题：*"${userQuestion}"*\n\n这是一个很好的问题！当前 DeepSeek API 未连接，我使用本地模拟响应来演示功能。\n\n配置 API Key 后，我将能够：\n- 基于您的具体问题给出深度回答\n- 结合知识库文档进行 RAG 问答\n- 搜索网络获取最新信息\n- 使用专业技能提供专业服务\n\n---\n*💡 提示：DeepSeek API 未连接，当前为本地模拟响应。请确认已在个人中心配置 API Key。*`
 }
 
 export async function sendMessage(messages, options = {}) {
@@ -73,7 +73,7 @@ export async function sendMessage(messages, options = {}) {
     return content
   } catch (e) {
     if (e.name === 'AbortError') throw e
-    console.warn('LM Studio 不可用，使用模拟响应:', e.message)
+    console.warn('DeepSeek API 不可用，使用模拟响应:', e.message)
     const mockResponse = generateMockResponse(messages)
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500))
     return mockResponse
@@ -112,7 +112,7 @@ export async function streamChat(messages, options = {}) {
     }
   } catch (e) {
     if (e.name === 'AbortError') throw e
-    console.warn('LM Studio 不可用，使用模拟响应:', e.message)
+    console.warn('DeepSeek API 不可用，使用模拟响应:', e.message)
     return {
       response: { ok: false, mock: true },
       [Symbol.asyncIterator]: mockStream

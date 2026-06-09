@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const savedSettings = loadSettings()
 
   const theme = ref(savedTheme || 'light')
-  const lmStudioApiKey = ref(savedSettings.lmStudioApiKey || '')
+  const deepseekApiKey = ref(savedSettings.deepseekApiKey || '')
   const aiConfig = ref({
     temperature: savedSettings.temperature ?? AI_DEFAULTS.temperature,
     maxTokens: savedSettings.maxTokens ?? AI_DEFAULTS.maxTokens,
@@ -23,7 +23,7 @@ export const useSettingsStore = defineStore('settings', () => {
   function saveAIConfig() {
     localStorage.setItem('app-ai-config', JSON.stringify({
       ...aiConfig.value,
-      lmStudioApiKey: lmStudioApiKey.value
+      deepseekApiKey: deepseekApiKey.value
     }))
   }
 
@@ -31,7 +31,7 @@ export const useSettingsStore = defineStore('settings', () => {
     saveAIConfig()
   }, { deep: true })
 
-  watch(lmStudioApiKey, () => {
+  watch(deepseekApiKey, () => {
     saveAIConfig()
   })
 
@@ -55,5 +55,5 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  return { theme, lmStudioApiKey, aiConfig, toggleTheme, setTheme, updateAIConfig }
+  return { theme, deepseekApiKey, aiConfig, toggleTheme, setTheme, updateAIConfig }
 })

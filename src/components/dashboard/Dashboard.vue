@@ -52,7 +52,7 @@
         <div class="tech-layer">
           <h4>AI 服务层</h4>
           <div class="tech-tags">
-            <span>LM Studio</span><span>Qwen3-4B-Thinking</span><span>Nomic Embed</span>
+            <span>DeepSeek</span><span>deepseek-v4-pro</span><span>TF-IDF 向量化</span>
             <span>RAG 检索</span><span>向量存储</span><span>文档解析</span>
           </div>
         </div>

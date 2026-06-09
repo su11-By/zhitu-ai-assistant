@@ -15,7 +15,7 @@ app.mount('#app')
 
 setApiKeyProvider(() => {
   const settings = useSettingsStore()
-  return settings.lmStudioApiKey
+  return settings.deepseekApiKey
 })
 
 seedDemoData()

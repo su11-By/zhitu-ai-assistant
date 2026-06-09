@@ -1,9 +1,9 @@
 export const AI_DEFAULTS = {
-  model: 'qwen3-4b-thinking-2507',
-  embeddingModel: 'text-embedding-nomic-embed-text-v1.5',
+  model: 'deepseek-v4-pro',
+  embeddingModel: 'local-tfidf',
   temperature: 0.4,
   maxTokens: 2048,
-  contextWindow: 4096,
+  contextWindow: 128000,
   topK: 5
 }
 

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "dompurify": "^3.4.3",
-    "mammoth": "^1.12.0",
+    "mammoth": "^1.6.0",
     "marked": "^12.0.2",
     "pdfjs-dist": "^4.10.38",
     "pinia": "2.1",
@@ -26,6 +26,7 @@
     "@vitest/coverage-v8": "^4.1.6",
     "@vue/test-utils": "^2.4.10",
     "jsdom": "^29.1.1",
+    "underscore": "^1.13.8",
     "vite": "^5.0.0",
     "vitest": "^4.1.6"
   }

@@ -23,7 +23,7 @@ Systematically diagnose issues in the Retrieval-Augmented Generation pipeline.
 Key files:
 - `src/services/fileParser.js` — PDF/DOCX/TXT/MD parsing
 - `src/services/chunker.js` — Text chunking strategy
-- `src/services/embeddingService.js` — LM Studio embedding API
+- `src/services/embeddingService.js` — 本地 TF-IDF 向量化
 - `src/services/vectorStore.js` — Local vector storage & search
 - `src/services/ragService.js` — RAG orchestration
 - `src/stores/knowledge.js` — Upload & indexing workflow
@@ -84,14 +84,12 @@ Walk through these layers in order. Stop at the first layer that shows problems.
   - All chunks fail to index ("所有分块嵌入失败" error in `knowledge.js:107`)
   - Embeddings are all zeros or NaN
 - **Diagnose:**
-  - Is LM Studio running? Check `src/services/embeddingService.js` for the endpoint URL
-  - Is the correct model loaded? (nomic-embed-text-v1.5 per `knowledge.js:107`)
-  - Run in console: `fetch('http://localhost:1234/v1/embeddings', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({input: 'test', model: 'nomic-embed-text-v1.5'}) })` — should return a vector
+  - Check `src/services/embeddingService.js` for local vectorization logic
+  - Run in console: `createEmbedding('test')` — should return a vector
   - Check embedding dimension matches what `cosineSimilarity.js` expects
 - **Common fixes:**
-  - Start LM Studio and load the embedding model
-  - Check port number in `embeddingService.js`
-  - Verify API endpoint path
+  - Check text tokenization logic
+  - Verify vocabulary building process
 
 ### Layer 4: Vector Search
 
@@ -157,9 +155,9 @@ Walk through these layers in order. Stop at the first layer that shows problems.
 
 ### "文档上传后搜索不到内容"
 ```
-1. 检查 LM Studio 是否运行并加载了 nomic-embed-text-v1.5
-2. 在浏览器控制台检查 IndexedDB 中是否有向量数据
-3. 检查 embedding 是否成功（看 network 面板）
+1. 检查 IndexedDB 中是否有向量数据
+2. 检查 embedding 是否成功（看 network 面板）
+3. 检查 `embeddingService.js` 中的向量化逻辑
 ```
 
 ### "搜索结果不相关"

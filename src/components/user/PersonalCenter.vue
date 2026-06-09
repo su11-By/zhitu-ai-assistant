@@ -35,15 +35,15 @@
       <div class="config-card">
         <div class="config-row">
           <div class="config-info">
-            <span class="config-label">LM Studio API Key</span>
-            <span class="config-desc">如 LM Studio 开启了 API 认证，请在此填入 Key</span>
+            <span class="config-label">DeepSeek API Key</span>
+            <span class="config-desc">从 DeepSeek 开放平台获取的 API Key（必填）</span>
           </div>
           <input
             type="password"
             class="key-input"
-            placeholder="留空则不发送认证头"
-            :value="settings.lmStudioApiKey"
-            @input="settings.lmStudioApiKey = $event.target.value"
+            placeholder="请输入 DeepSeek API Key"
+            :value="settings.deepseekApiKey"
+            @input="settings.deepseekApiKey = $event.target.value"
           />
         </div>
       </div>
@@ -96,10 +96,10 @@
             :value="settings.aiConfig.contextWindow"
             @change="settings.updateAIConfig({ contextWindow: +$event.target.value })"
           >
-            <option :value="2048">2048</option>
-            <option :value="4096">4096</option>
-            <option :value="6144">6144</option>
-            <option :value="8192">8192</option>
+            <option :value="8192">8K</option>
+            <option :value="32768">32K</option>
+            <option :value="131072">128K</option>
+            <option :value="262144">256K</option>
           </select>
         </div>
       </div>

@@ -5,10 +5,7 @@
 ## 环境要求
 
 - **Node.js** >= 18
-- **LM Studio** — 本地 AI 模型运行环境（[下载地址](https://lmstudio.ai/)）
-- **AI 模型**（在 LM Studio 中加载）：
-  - 对话模型：推荐 Qwen2.5-3B-Instruct 或更高版本
-  - 嵌入模型：推荐 nomic-embed-text-v1.5（用于 RAG 向量检索）
+- **DeepSeek API Key** — 用于 AI 对话（[获取地址](https://platform.deepseek.com/)）
 
 ## 快速开始
 
@@ -25,15 +22,10 @@ cd server
 npm install
 cd ..
 
-# 4. 启动 LM Studio
-#    - 加载对话模型（如 Qwen2.5-3B-Instruct）
-#    - 加载嵌入模型（如 nomic-embed-text-v1.5）
-#    - 确认本地 API 服务运行在 http://127.0.0.1:1234
-
-# 5. 启动后端搜索代理服务（端口 3001）
+# 4. 启动后端搜索代理服务（端口 3001）
 npm run server
 
-# 6. 另开一个终端，启动前端开发服务（端口 5173）
+# 5. 另开一个终端，启动前端开发服务（端口 5173）
 npm run dev
 ```
 
@@ -82,7 +74,7 @@ npm run dev:all
 
 - **前端**: Vue 3 + Vite 5 + Pinia + Vue Router
 - **后端**: Express（搜索代理、网页抓取）
-- **AI**: LM Studio + Qwen 模型（OpenAI 兼容 API）
+- **AI**: DeepSeek API（OpenAI 兼容）
 - **向量存储**: IndexedDB（浏览器端）
 - **数据持久化**: localStorage
 
@@ -95,7 +87,7 @@ npm run dev:all
 - 流式对话输出 + Token 级上下文窗口管理
 - 用户认证系统 + 多用户数据隔离
 - CSS 变量主题系统，浅色/深色一键切换
-- LM Studio 不可用时自动回退到本地模拟响应
+- API 不可用时自动回退到本地模拟响应
 
 ## 运行测试
 
@@ -116,7 +108,6 @@ npm run preview   # 预览构建产物
 本项目为前端原型系统，以下能力为演示版实现：
 
 - 暂未接入真实文件解析服务
-- 暂未接入云端大模型 API
 - 暂未实现多人协作与实时同步
 
 ## 后续扩展方向

@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
         const response = {
           choices: [{
             message: {
-              content: `这是对您问题的模拟回复：\n\n"${userMessage}"\n\n(注意：这是测试模式，使用的是模拟响应。如需真实 AI 响应，请启动 LM Studio 并加载模型。)`
+              content: `这是对您问题的模拟回复：\n\n"${userMessage}"\n\n(注意：这是测试模式，使用的是模拟响应。如需真实 AI 响应，请配置 DeepSeek API Key。)`
             }
           }]
         };
@@ -45,5 +45,5 @@ const server = http.createServer((req, res) => {
 
 const PORT = 1234;
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Mock LM Studio API server running on http://127.0.0.1:${PORT}`);
+  console.log(`Mock AI API server running on http://127.0.0.1:${PORT}`);
 });

@@ -48,7 +48,7 @@ export function seedDemoData() {
   // Simulate a conversation
   chat.messages.push(
     { id: 'demo-1', role: 'user', content: '帮我梳理毕业设计的整体架构思路', timestamp: Date.now() - 3600000 },
-    { id: 'demo-2', role: 'assistant', content: '好的！建议采用以下架构：\n\n**前端层**：Vue 3 + Vite + Pinia\n- 组件化开发，组合式 API\n- CSS 变量实现主题系统\n- IndexedDB 存储向量数据\n\n**AI 服务层**：LM Studio 本地部署\n- Qwen3-4B-Thinking 对话模型\n- Nomic Embed Text 嵌入模型\n- OpenAI 兼容 API 调用\n\n**后端服务层**：Express\n- 搜索代理（搜狗搜索）\n- 网页内容抓取\n- API 网关\n\n**数据层**：\n- LocalStorage 持久化用户数据\n- IndexedDB 存储文档向量\n\n这样的架构既完整又能体现技术深度，适合毕业设计展示！', timestamp: Date.now() - 3500000 }
+    { id: 'demo-2', role: 'assistant', content: '好的！建议采用以下架构：\n\n**前端层**：Vue 3 + Vite + Pinia\n- 组件化开发，组合式 API\n- CSS 变量实现主题系统\n- IndexedDB 存储向量数据\n\n**AI 服务层**：DeepSeek API\n- deepseek-v4-pro 对话模型\n- TF-IDF 本地向量化\n- Anthropic 兼容 API 调用\n\n**后端服务层**：Express\n- 搜索代理（搜狗搜索）\n- 网页内容抓取\n- API 网关\n\n**数据层**：\n- LocalStorage 持久化用户数据\n- IndexedDB 存储文档向量\n\n这样的架构既完整又能体现技术深度，适合毕业设计展示！', timestamp: Date.now() - 3500000 }
   )
   chat.saveMessages(s1.id)
 

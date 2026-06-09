@@ -1,4 +1,5 @@
-const BASE_URL = '/api/v1'
+// DeepSeek API（直接调用，无需后端代理）
+const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
 
 let _getApiKey = null
 
@@ -15,7 +16,7 @@ export class ApiError extends Error {
 }
 
 export async function apiPost(path, body, options = {}) {
-  const url = `${BASE_URL}${path}`
+  const url = `${DEEPSEEK_BASE_URL}${path}`
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
@@ -59,7 +60,7 @@ export async function apiGet(path, options = {}) {
     }
   }
 
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${DEEPSEEK_BASE_URL}${path}`, {
     headers,
     signal: options.signal
   })
