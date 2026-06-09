@@ -142,29 +142,17 @@ async function streamOneAgent(agent, debateContext, options = {}) {
 export async function runDebateAgent(agent, debateContext, options = {}) {
   let fullContent = ''
 
-  try {
-    const streamResult = await streamOneAgent(agent, debateContext, {
-      temperature: options.temperature,
-      maxTokens: options.maxTokens,
-      signal: options.signal,
-      onToken: (token) => {
-        fullContent += token
-        if (options.onToken) options.onToken(token)
-      }
-    })
-
-    for await (const _token of streamResult) { }
-  } catch (e) {
-    if (e.name === 'AbortError') throw e
-    console.warn(`Agent ${agent.name} API failed, using mock:`, e.message)
-    fullContent = getMockResponse(agent, debateContext)
-    if (options.onToken) {
-      for (const char of fullContent) {
-        await new Promise(r => setTimeout(r, 30 + Math.random() * 40))
-        options.onToken(char)
-      }
+  const streamResult = await streamOneAgent(agent, debateContext, {
+    temperature: options.temperature,
+    maxTokens: options.maxTokens,
+    signal: options.signal,
+    onToken: (token) => {
+      fullContent += token
+      if (options.onToken) options.onToken(token)
     }
-  }
+  })
+
+  for await (const _token of streamResult) { }
 
   return {
     agentId: agent.id,
@@ -174,23 +162,4 @@ export async function runDebateAgent(agent, debateContext, options = {}) {
     role: agent.role,
     content: fullContent
   }
-}
-
-function getMockResponse(agent, context) {
-  const topic = context.length > 0 ? (context.find(m => m.role === 'user')?.content || '这个话题') : '这个话题'
-
-  const mockResponses = {
-    'pro': `针对"${topic.slice(0, 30)}"这个话题，我认为确实值得支持。\n\n首先，从实际效果来看，这个方向能带来显著的积极影响。我们看过很多成功案例都证明了这一点。\n\n其次，从可行性角度，现有技术和资源完全能够支撑。关键在于执行力和持续投入。\n\n综上所述，我坚定支持这一观点，希望能给大家新的启发。`,
-    'con': `关于"${topic.slice(0, 30)}"，我有不同的看法。\n\n正方提到了一些好处，但我们需要冷静分析其中的风险和问题。\n\n首先，理想和现实之间往往有差距。很多看起来美好的方案在执行中会遇到意想不到的困难。\n\n其次，我们需要考虑代价和替代方案，而不是盲目支持。\n\n因此，我建议谨慎对待，至少要先解决几个关键问题。`,
-    'tech-expert': `从技术角度来看"${topic.slice(0, 30)}"，有几点值得关注：\n\n**技术可行性**：目前的技术栈可以支撑，但有几个关键技术难点需要攻克。\n\n**架构建议**：我推荐采用渐进式方案，先做MVP验证核心假设。\n\n**成本评估**：技术投入大概需要团队3-6个月的努力，建议分阶段推进。`,
-    'business-analyst': `从商业角度分析"${topic.slice(0, 30)}"：\n\n**市场规模**：这个方向的市场空间是真实存在的，预计年增长在15-20%。\n\n**竞争格局**：目前头部玩家不多，存在窗口期。\n\n**商业模式**：核心变现路径清晰，单位经济效益可算。建议尽快验证PMF。`,
-    'ux-designer': `从用户体验视角看"${topic.slice(0, 30)}"：\n\n**用户需求**：目标用户确实有这方面的痛点，且目前没有很好的解决方案。\n\n**体验关键**：核心体验路径需要打磨，尤其要注意首次使用的引导和上手成本。\n\n**建议**：做几轮用户访谈，验证几个关键假设后再定型。`,
-    'product-manager': `作为产品经理，对"${topic.slice(0, 30)}"的思考：\n\n**用户价值**：需求真实存在，但要区分"锦上添花"和"雪中送炭"。\n\n**优先级**：如果有P0问题没解决，建议先解决核心痛点。\n\n**MVP建议**：第一版聚焦最核心的一个场景，做深做透。`,
-    'professor': `从学术角度审视"${topic.slice(0, 30)}"：\n\n**理论基础**：这方面的研究可以追溯到几个经典理论框架，理论支撑是充分的。\n\n**研究前沿**：近两年的顶会论文在这个方向有不少突破，值得关注。\n\n**建议**：先做文献综述，避免重复发明轮子。`,
-    'researcher': `从实证研究角度看"${topic.slice(0, 30)}"：\n\n**研究设计**：建议设计对照实验来验证核心假设。\n\n**关键指标**：需要明确定义成功的量化标准。\n\n**潜在偏差**：注意几个常见的认知偏差可能影响判断。\n\n**下一步**：先做探索性研究，确认方向后再做验证性研究。`,
-    'student': `作为学生，对"${topic.slice(0, 30)}"我有些真实想法：\n\n说实话，这个问题对我们学生来说真的很实际。我之前也思考过类似的问题。\n\n我觉得老师们说得很对，但有时候理论和实际体验还是有差距的。\n\n我的看法是，这个方向确实不错，但希望能更多考虑我们学生的真实需求和困难。`,
-    'host': `好的，感谢各位精彩的讨论！\n\n**辩论总结**：\n\n围绕"${topic.slice(0, 30)}"，各位从不同角度给出了深入的分析。\n\n正方强调了其积极意义和可行性，反方提醒我们注意潜在的风险和挑战。各位专家也从技术、商业、用户体验等维度给出了专业的见解。\n\n**综合评价**：这个话题确实值得深入探讨，建议在实际推进中平衡各方观点，既看到机遇也正视挑战。\n\n感谢所有参与者！`
-  }
-
-  return mockResponses[agent.id] || `关于"${topic.slice(0, 30)}"，作为${agent.name}，我认为这是一个值得深入探讨的话题。\n\n大家从不同角度给出了很好的见解，给我很多启发。\n\n综合来看，我们需要在多方面做出平衡和权衡，才能找到最优解。`
 }

@@ -1,5 +1,5 @@
-// 直接调用 DeepSeek API（公网部署时使用）
-const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
+// DeepSeek API 直接调用
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1'
 
 let _getApiKey = null
 
@@ -16,17 +16,24 @@ export class ApiError extends Error {
 }
 
 export async function apiPost(path, body, options = {}) {
-  const url = `${DEEPSEEK_BASE_URL}${path}`
+  // 直接调用 DeepSeek API
+  const url = `${DEEPSEEK_API_URL}${path}`
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
   }
 
+  // 获取 API Key
   if (_getApiKey) {
     const key = _getApiKey()
     if (key) {
       headers['Authorization'] = `Bearer ${key}`
     }
+  }
+
+  // 检查是否设置了 API Key
+  if (!headers['Authorization']) {
+    throw new ApiError(401, '请先设置 DeepSeek API Key')
   }
 
   const response = await fetch(url, {
