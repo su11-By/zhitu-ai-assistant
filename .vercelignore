@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+server/dist/
+
+# Backup
+server/_backup_nodejs/
+
+# Database
+server/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+# Large files
+*.tar.gz
+*.zip
+*.gguf
+
+# LM Studio
+LM Studio/
+lmstudio-community/
+Qwen/
