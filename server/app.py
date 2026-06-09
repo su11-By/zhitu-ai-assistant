@@ -157,9 +157,11 @@ def ratelimit_handler(e):
     return jsonify({'error': '请求过于频繁，请稍后重试'}), 429
 
 
+# ── 初始化数据库 ──
+connect_db()
+
 # ── 启动服务器 ──
 def start_server():
-    connect_db()
     print(f'[Server] http://127.0.0.1:{PORT}  |  env: {os.environ.get("NODE_ENV", "development")}')
     print(f'[Server] Network access: http://0.0.0.0:{PORT}')
 
