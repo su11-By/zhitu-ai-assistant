@@ -1,6 +1,9 @@
 const SEARCH_TIMEOUT = 15_000
 const FETCH_TIMEOUT = 10_000
 
+// 后端服务地址（部署到 Render 后替换为您的公网地址）
+const BACKEND_URL = 'https://zhitu-ai-assistant.netlify.app/api'
+
 const BLOCKED_IP_PATTERNS = [
   /^https?:\/\/127\./,
   /^https?:\/\/10\./,
@@ -54,7 +57,7 @@ export async function searchWeb(query, maxResults = 5) {
 
   try {
     const data = await fetchJson(
-      `/search/web?query=${encodeURIComponent(query.trim())}`,
+      `${BACKEND_URL}/search/web?query=${encodeURIComponent(query.trim())}`,
       SEARCH_TIMEOUT
     )
     return (data.results || []).slice(0, maxResults)
@@ -73,7 +76,7 @@ export async function fetchPageContent(url) {
 
   try {
     const encoded = encodeURIComponent(url)
-    const data = await fetchJson(`/fetch/${encoded}`, FETCH_TIMEOUT)
+    const data = await fetchJson(`${BACKEND_URL}/fetch/${encoded}`, FETCH_TIMEOUT)
     return data.text || ''
   } catch {
     return ''

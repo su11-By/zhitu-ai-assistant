@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://stale-beers-give.loca.lt/api'
+// 后端服务地址（部署到 Render 后替换为您的公网地址）
+const API_BASE_URL = 'https://zhitu-ai-assistant.netlify.app/api'
 const TOKEN_KEY = 'app-auth-token'
 
 let _token = localStorage.getItem(TOKEN_KEY)
@@ -53,7 +54,6 @@ export async function apiRequest(method, path, body = null, options = {}) {
   }
 
   if (!response.ok) {
-    // Token 过期或无效，自动清除并通知
     if (response.status === 401 && _token) {
       setAuthToken(null)
       window.dispatchEvent(new CustomEvent('auth-expired'))

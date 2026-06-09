@@ -17,10 +17,6 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_SEARCH_SERVER || 'http://127.0.0.1:3004',
           changeOrigin: true
-        },
-        '/ai': {
-          target: env.VITE_SEARCH_SERVER || 'http://127.0.0.1:3004',
-          changeOrigin: true
         }
       }
     },
