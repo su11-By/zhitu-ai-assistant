@@ -1,5 +1,5 @@
-// 后端服务地址（部署到 Render 后替换为您的公网地址）
-const API_BASE_URL = 'https://zhitu-ai-assistant.netlify.app/api'
+// 后端服务地址（PythonAnywhere 部署）
+const API_BASE_URL = 'https://admin051104.pythonanywhere.com/api'
 const TOKEN_KEY = 'app-auth-token'
 
 let _token = localStorage.getItem(TOKEN_KEY)

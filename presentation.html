@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智途 AI 助手 — 期末答辩演示</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   CSS CUSTOM PROPERTIES
+   =========================================== */
+:root {
+    --bg-deep: #0a0a0f;
+    --bg-surface: #111118;
+    --bg-card: #1a1a24;
+    --bg-card-hover: #22222f;
+    --accent-orange: #ff6b2c;
+    --accent-orange-dim: rgba(255, 107, 44, 0.15);
+    --accent-cyan: #00d4ff;
+    --accent-cyan-dim: rgba(0, 212, 255, 0.1);
+    --accent-green: #34d399;
+    --accent-purple: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-yellow: #fbbf24;
+    --text-primary: #f0f0f5;
+    --text-secondary: #8888a0;
+    --text-muted: #55556a;
+    --border-subtle: rgba(255,255,255,0.06);
+    --font-display: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+    --font-body: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Viewport-safe typography */
+    --title-size: clamp(2rem, 5.5vw, 4.5rem);
+    --h2-size: clamp(1.4rem, 3.5vw, 2.8rem);
+    --h3-size: clamp(1rem, 2.2vw, 1.6rem);
+    --body-size: clamp(0.8rem, 1.4vw, 1.15rem);
+    --small-size: clamp(0.65rem, 1vw, 0.9rem);
+    --slide-padding: clamp(1.5rem, 5vw, 5rem);
+    --content-gap: clamp(0.5rem, 2vw, 2rem);
+    --element-gap: clamp(0.25rem, 1vw, 1rem);
+}
+
+/* ===========================================
+   VIEWPORT FITTING: MANDATORY BASE STYLES
+   =========================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+}
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 100%;
+    overflow: hidden;
+    padding: var(--slide-padding);
+}
+
+.card, .container, .content-box {
+    max-width: min(90vw, 1100px);
+    max-height: min(80vh, 700px);
+}
+
+.feature-list, .bullet-list {
+    gap: clamp(0.4rem, 1vh, 1rem);
+}
+
+.feature-list li, .bullet-list li {
+    font-size: var(--body-size);
+    line-height: 1.4;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+img, .image-container {
+    max-width: 100%;
+    max-height: min(50vh, 400px);
+    object-fit: contain;
+}
+
+@media (max-height: 700px) {
+    :root {
+        --slide-padding: clamp(1rem, 3vw, 2.5rem);
+        --content-gap: clamp(0.4rem, 1.5vw, 1.2rem);
+        --title-size: clamp(1.5rem, 5vw, 3rem);
+        --h2-size: clamp(1.2rem, 3vw, 2rem);
+    }
+}
+
+@media (max-height: 600px) {
+    :root {
+        --slide-padding: clamp(0.75rem, 2.5vw, 2rem);
+        --content-gap: clamp(0.3rem, 1vw, 0.8rem);
+        --title-size: clamp(1.2rem, 4.5vw, 2.2rem);
+        --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+    }
+    .nav-dots, .keyboard-hint, .decorative { display: none; }
+}
+
+@media (max-height: 500px) {
+    :root {
+        --slide-padding: clamp(0.5rem, 2vw, 1.2rem);
+        --title-size: clamp(1rem, 3.5vw, 1.6rem);
+        --h2-size: clamp(0.9rem, 2.5vw, 1.3rem);
+        --body-size: clamp(0.65rem, 1vw, 0.85rem);
+    }
+}
+
+@media (max-width: 600px) {
+    :root { --title-size: clamp(1.3rem, 7vw, 2.5rem); }
+    .grid { grid-template-columns: 1fr; }
+    .split-layout { flex-direction: column !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+    html { scroll-behavior: auto; }
+}
+
+/* ===========================================
+   BOLD SIGNAL THEME
+   =========================================== */
+
+/* Noise texture overlay */
+.slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+}
+
+.slide > * { position: relative; z-index: 1; }
+
+/* Section number watermark */
+.section-number {
+    position: absolute;
+    top: clamp(1rem, 3vw, 2.5rem);
+    right: clamp(1.5rem, 4vw, 4rem);
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 12vw, 10rem);
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    z-index: 0;
+    user-select: none;
+}
+
+/* Orange accent card */
+.accent-card {
+    background: linear-gradient(135deg, var(--accent-orange), #ff8f5c);
+    border-radius: clamp(12px, 1.5vw, 20px);
+    padding: clamp(1.5rem, 3vw, 3rem);
+    color: #fff;
+    box-shadow: 0 20px 60px rgba(255, 107, 44, 0.2);
+}
+
+/* Surface card */
+.surface-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: clamp(10px, 1.2vw, 16px);
+    padding: clamp(1rem, 2vw, 2rem);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.surface-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+/* Section heading with orange bar */
+.section-heading {
+    font-family: var(--font-display);
+    font-size: var(--h2-size);
+    font-weight: 700;
+    color: var(--text-primary);
+    padding-left: clamp(0.8rem, 1.5vw, 1.2rem);
+    border-left: 4px solid var(--accent-orange);
+    margin-bottom: var(--content-gap);
+    line-height: 1.3;
+}
+
+/* Tag / badge */
+.tag {
+    display: inline-block;
+    padding: 0.2em 0.7em;
+    border-radius: 999px;
+    font-size: var(--small-size);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.tag-orange { background: var(--accent-orange-dim); color: var(--accent-orange); }
+.tag-cyan { background: var(--accent-cyan-dim); color: var(--accent-cyan); }
+.tag-green { background: rgba(52,211,153,0.12); color: var(--accent-green); }
+.tag-purple { background: rgba(167,139,250,0.12); color: var(--accent-purple); }
+.tag-pink { background: rgba(244,114,182,0.12); color: var(--accent-pink); }
+.tag-yellow { background: rgba(251,191,36,0.12); color: var(--accent-yellow); }
+
+/* Flow chart / pipeline */
+.pipeline {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.3rem, 0.8vw, 0.6rem);
+    flex-wrap: wrap;
+}
+
+.pipeline-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.6rem, 1.5vw, 1.2rem);
+    font-size: var(--small-size);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.pipeline-arrow {
+    color: var(--accent-orange);
+    font-size: var(--body-size);
+    font-weight: 700;
+}
+
+/* Stat block */
+.stat-block {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--accent-orange);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: var(--small-size);
+    color: var(--text-secondary);
+    margin-top: 0.3em;
+}
+
+/* Feature icon card */
+.icon-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: clamp(10px, 1.2vw, 14px);
+    padding: clamp(0.8rem, 1.5vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.icon-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-orange);
+}
+
+.icon-card .icon {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    line-height: 1;
+}
+
+.icon-card .label {
+    font-size: var(--body-size);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.icon-card .desc {
+    font-size: var(--small-size);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Code block */
+.code-block {
+    background: #0d0d14;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: clamp(0.8rem, 1.5vw, 1.5rem);
+    font-family: var(--font-mono);
+    font-size: var(--small-size);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    overflow: hidden;
+}
+
+.code-block .keyword { color: var(--accent-purple); }
+.code-block .string { color: var(--accent-green); }
+.code-block .comment { color: var(--text-muted); }
+.code-block .func { color: var(--accent-cyan); }
+
+/* Navigation dots */
+.nav-dots {
+    position: fixed;
+    right: clamp(1rem, 2vw, 2rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+}
+
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.nav-dot.active {
+    background: var(--accent-orange);
+    box-shadow: 0 0 12px rgba(255, 107, 44, 0.5);
+    transform: scale(1.3);
+}
+
+/* Progress bar */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan));
+    z-index: 200;
+    transition: width 0.3s ease;
+}
+
+/* Keyboard hint */
+.keyboard-hint {
+    position: fixed;
+    bottom: clamp(1rem, 2vw, 1.5rem);
+    right: clamp(1rem, 2vw, 2rem);
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    z-index: 100;
+    opacity: 0.6;
+}
+
+/* Reveal animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+
+/* Split layout */
+.split-layout {
+    display: flex;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: center;
+}
+
+.split-left, .split-right {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Bullet list */
+.bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.3rem, 0.8vh, 0.7rem);
+}
+
+.bullet-list li {
+    font-size: var(--body-size);
+    color: var(--text-secondary);
+    padding-left: 1.2em;
+    position: relative;
+    line-height: 1.5;
+}
+
+.bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, var(--accent-orange), #ff8f5c, var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glow ring */
+.glow-ring {
+    width: clamp(80px, 12vw, 140px);
+    height: clamp(80px, 12vw, 140px);
+    border-radius: 50%;
+    border: 2px solid var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    box-shadow: 0 0 40px rgba(255, 107, 44, 0.2), inset 0 0 30px rgba(255, 107, 44, 0.05);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 40px rgba(255, 107, 44, 0.2), inset 0 0 30px rgba(255, 107, 44, 0.05); }
+    50% { box-shadow: 0 0 60px rgba(255, 107, 44, 0.35), inset 0 0 40px rgba(255, 107, 44, 0.1); }
+}
+
+/* Improvement card */
+.improve-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: clamp(0.6rem, 1.2vw, 1.2rem);
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 1vw, 1rem);
+}
+
+.improve-card .num {
+    font-family: var(--font-display);
+    font-size: var(--h3-size);
+    font-weight: 900;
+    color: var(--accent-orange);
+    line-height: 1;
+    min-width: 1.5em;
+}
+
+.improve-card .text {
+    font-size: var(--body-size);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.improve-card .text strong {
+    color: var(--text-primary);
+}
+
+/* End CTA */
+.end-cta {
+    font-family: var(--font-display);
+    font-size: var(--h3-size);
+    color: var(--text-secondary);
+    margin-top: var(--content-gap);
+    letter-spacing: 0.05em;
+}
+
+/* Decorative blobs */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.blob-orange { background: var(--accent-orange); }
+.blob-cyan { background: var(--accent-cyan); }
+.blob-purple { background: var(--accent-purple); }
+
+/* Architecture diagram */
+.arch-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 1vw, 0.8rem);
+    flex-wrap: wrap;
+    margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+}
+
+.arch-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: clamp(0.3rem, 0.8vw, 0.6rem) clamp(0.6rem, 1.2vw, 1rem);
+    font-size: var(--small-size);
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.arch-box.highlight {
+    border-color: var(--accent-orange);
+    background: var(--accent-orange-dim);
+    color: var(--accent-orange);
+}
+
+.arch-arrow {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+/* Source card */
+.source-card {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 0 8px 8px 0;
+    padding: clamp(0.5rem, 1vw, 1rem) clamp(0.8rem, 1.5vw, 1.2rem);
+}
+
+.source-card .source-title {
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--accent-cyan);
+    margin-bottom: 0.2em;
+}
+
+.source-card .source-desc {
+    font-size: var(--small-size);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navigation Dots -->
+<nav class="nav-dots" id="navDots" aria-label="幻灯片导航"></nav>
+
+<!-- Keyboard Hint -->
+<div class="keyboard-hint">↑↓ 或滚轮切换</div>
+
+<!-- ========================================
+     SLIDE 1: TITLE
+     ======================================== -->
+<section class="slide" id="slide-1">
+    <div class="blob blob-orange decorative" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+    <div class="blob blob-cyan decorative" style="width:300px;height:300px;bottom:-80px;left:-80px;"></div>
+    <div class="slide-content" style="align-items:center;text-align:center;">
+        <div class="reveal">
+            <div class="glow-ring" style="margin:0 auto clamp(1rem,3vh,2rem);">🤖</div>
+        </div>
+        <h1 class="reveal reveal-delay-1" style="font-family:var(--font-display);font-size:var(--title-size);font-weight:900;line-height:1.15;letter-spacing:-0.02em;">
+            智途 AI 助手
+        </h1>
+        <p class="reveal reveal-delay-2" style="font-size:var(--h3-size);color:var(--text-secondary);margin-top:clamp(0.5rem,1.5vh,1rem);font-weight:400;">
+            基于 DeepSeek API 的智能学习助手工作台
+        </p>
+        <div class="reveal reveal-delay-3" style="margin-top:clamp(1rem,3vh,2rem);display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;">
+            <span class="tag tag-orange">Vue 3</span>
+            <span class="tag tag-cyan">DeepSeek V4</span>
+            <span class="tag tag-green">RAG 检索</span>
+            <span class="tag tag-purple">智能问答</span>
+        </div>
+        <p class="reveal reveal-delay-4" style="font-size:var(--small-size);color:var(--text-muted);margin-top:clamp(1.5rem,4vh,3rem);">
+            期末项目答辩 &nbsp;·&nbsp; 苏煜衡
+        </p>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 2: PROBLEM
+     ======================================== -->
+<section class="slide" id="slide-2">
+    <span class="section-number decorative">01</span>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">项目背景与问题</h2>
+        <div class="split-layout" style="margin-top:var(--content-gap);">
+            <div class="split-left">
+                <div class="accent-card reveal reveal-delay-1">
+                    <p style="font-size:clamp(1rem,2vw,1.4rem);font-weight:600;line-height:1.5;">
+                        在学习和答辩准备过程中，资料来源分散，任务、讲稿、设计说明和参考资料分布在不同平台中，难以统一整理和快速调用。
+                    </p>
+                </div>
+            </div>
+            <div class="split-right">
+                <ul class="bullet-list reveal reveal-delay-2">
+                    <li>📂 资料散落在微信、网盘、本地文件夹</li>
+                    <li>🔍 查找特定内容需要反复翻阅</li>
+                    <li>📋 任务安排与知识管理割裂</li>
+                    <li>💬 通用 AI 缺乏课程知识上下文</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 3: SOLUTION OVERVIEW
+     ======================================== -->
+<section class="slide" id="slide-3">
+    <span class="section-number decorative">02</span>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">解决方案：AI 学习助手工作台</h2>
+        <p class="reveal reveal-delay-1" style="font-size:var(--body-size);color:var(--text-secondary);margin-bottom:var(--content-gap);max-width:700px;">
+            把知识整理、智能问答、任务管理和工作台组织整合在一个系统中，面向课程学习和答辩准备场景。
+        </p>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));">
+            <div class="icon-card reveal reveal-delay-1">
+                <span class="icon">📊</span>
+                <span class="label">项目总览</span>
+                <span class="desc">统计数据与系统全貌</span>
+            </div>
+            <div class="icon-card reveal reveal-delay-2">
+                <span class="icon">🗂️</span>
+                <span class="label">工作台</span>
+                <span class="desc">卡片式信息组织</span>
+            </div>
+            <div class="icon-card reveal reveal-delay-3">
+                <span class="icon">📚</span>
+                <span class="label">知识库</span>
+                <span class="desc">导入·分类·检索·溯源</span>
+            </div>
+            <div class="icon-card reveal reveal-delay-4">
+                <span class="icon">💬</span>
+                <span class="label">智能问答</span>
+                <span class="desc">双源问答 + 深度研究</span>
+            </div>
+            <div class="icon-card reveal reveal-delay-5">
+                <span class="icon">✅</span>
+                <span class="label">任务管理</span>
+                <span class="desc">优先级·截止日期·统计</span>
+            </div>
+            <div class="icon-card reveal reveal-delay-6">
+                <span class="icon">⚙️</span>
+                <span class="label">设置</span>
+                <span class="desc">主题切换·数据导出</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 4: KNOWLEDGE BASE
+     ======================================== -->
+<section class="slide" id="slide-4">
+    <span class="section-number decorative">03</span>
+    <div class="blob blob-purple decorative" style="width:250px;height:250px;bottom:-60px;right:10%;"></div>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">核心模块：知识库管理</h2>
+        <p class="reveal reveal-delay-1" style="font-size:var(--body-size);color:var(--text-secondary);margin-bottom:var(--content-gap);">
+            实现从建库、导入、整理到检索溯源的完整链路。
+        </p>
+        <div class="split-layout">
+            <div class="split-left">
+                <div class="pipeline reveal reveal-delay-2" style="margin-bottom:clamp(0.8rem,2vh,1.5rem);">
+                    <span class="pipeline-step">📄 文档导入</span>
+                    <span class="pipeline-arrow">→</span>
+                    <span class="pipeline-step">🔤 文本分块</span>
+                    <span class="pipeline-arrow">→</span>
+                    <span class="pipeline-step">📐 向量嵌入</span>
+                    <span class="pipeline-arrow">→</span>
+                    <span class="pipeline-step">💾 向量存储</span>
+                </div>
+                <div class="pipeline reveal reveal-delay-3">
+                    <span class="pipeline-step">🔎 语义检索</span>
+                    <span class="pipeline-arrow">→</span>
+                    <span class="pipeline-step">📎 上下文增强</span>
+                    <span class="pipeline-arrow">→</span>
+                    <span class="pipeline-step">🤖 AI 生成回答</span>
+                </div>
+            </div>
+            <div class="split-right">
+                <ul class="bullet-list reveal reveal-delay-4">
+                    <li>个人库 + 团队库双层结构</li>
+                    <li>支持 PDF / Word / PPT / TXT 多格式导入</li>
+                    <li>自动分类标签与来源记录</li>
+                    <li>关键词搜索与语义检索</li>
+                    <li>来源溯源卡片展示</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 5: AI Q&A
+     ======================================== -->
+<section class="slide" id="slide-5">
+    <span class="section-number decorative">04</span>
+    <div class="blob blob-cyan decorative" style="width:300px;height:300px;top:-80px;left:-60px;"></div>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">核心模块：智能问答与深度研究</h2>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));margin-top:var(--content-gap);">
+            <div class="surface-card reveal reveal-delay-1" style="border-top:3px solid var(--accent-orange);">
+                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
+                    <span style="font-size:1.5rem;">💬</span>
+                    <span style="font-weight:700;font-size:var(--h3-size);">双源问答</span>
+                </div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">
+                    知识库资料 + 全网摘要联合回答，附带来源溯源卡片
+                </p>
+            </div>
+            <div class="surface-card reveal reveal-delay-2" style="border-top:3px solid var(--accent-cyan);">
+                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
+                    <span style="font-size:1.5rem;">🔬</span>
+                    <span style="font-weight:700;font-size:var(--h3-size);">深度研究</span>
+                </div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">
+                    生成报告提纲、思维导图结构和研究产物
+                </p>
+            </div>
+            <div class="surface-card reveal reveal-delay-3" style="border-top:3px solid var(--accent-purple);">
+                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
+                    <span style="font-size:1.5rem;">🖼️</span>
+                    <span style="font-weight:700;font-size:var(--h3-size);">多模态理解</span>
+                </div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">
+                    图片、表格、代码、音频的统一分析入口
+                </p>
+            </div>
+        </div>
+        <div class="reveal reveal-delay-4" style="margin-top:var(--content-gap);">
+            <div class="source-card" style="max-width:500px;">
+                <div class="source-title">AI 技术方案</div>
+                <div class="source-desc">主模型 DeepSeek V4 Flash · OpenAI 兼容格式 · 流式输出 · Token 级上下文管理</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 6: WORKSPACE & TASKS
+     ======================================== -->
+<section class="slide" id="slide-6">
+    <span class="section-number decorative">05</span>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">工作台与任务管理</h2>
+        <div class="split-layout" style="margin-top:var(--content-gap);">
+            <div class="split-left">
+                <div class="surface-card reveal reveal-delay-1" style="border-left:3px solid var(--accent-green);">
+                    <h3 style="font-size:var(--h3-size);font-weight:700;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;">
+                        🗂️ 工作台
+                    </h3>
+                    <ul class="bullet-list">
+                        <li>卡片式信息组织</li>
+                        <li>支持文本 / 代码 / 图表 / 脑图 / 表格 / 文档</li>
+                        <li>拖拽排序与详情查看</li>
+                        <li>答辩材料统一收纳空间</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="split-right">
+                <div class="surface-card reveal reveal-delay-2" style="border-left:3px solid var(--accent-yellow);">
+                    <h3 style="font-size:var(--h3-size);font-weight:700;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;">
+                        ✅ 任务管理
+                    </h3>
+                    <ul class="bullet-list">
+                        <li>新增 / 编辑 / 删除任务</li>
+                        <li>优先级设置（高 / 中 / 低）</li>
+                        <li>截止日期与完成状态</li>
+                        <li>任务统计面板</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 7: TECH ARCHITECTURE
+     ======================================== -->
+<section class="slide" id="slide-7">
+    <span class="section-number decorative">06</span>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">技术架构</h2>
+        <div class="split-layout" style="margin-top:var(--content-gap);">
+            <div class="split-left">
+                <div class="reveal reveal-delay-1" style="margin-bottom:clamp(0.8rem,1.5vh,1.2rem);">
+                    <p style="font-size:var(--small-size);color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">前端层</p>
+                    <div class="arch-row">
+                        <span class="arch-box highlight">Vue 3</span>
+                        <span class="arch-box highlight">Vite 5</span>
+                        <span class="arch-box highlight">Pinia</span>
+                        <span class="arch-box highlight">Vue Router</span>
+                    </div>
+                </div>
+                <div class="reveal reveal-delay-2" style="margin-bottom:clamp(0.8rem,1.5vh,1.2rem);">
+                    <p style="font-size:var(--small-size);color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">AI 服务层</p>
+                    <div class="arch-row">
+                        <span class="arch-box" style="border-color:var(--accent-cyan);color:var(--accent-cyan);">DeepSeek API</span>
+                        <span class="arch-box" style="border-color:var(--accent-cyan);color:var(--accent-cyan);">RAG Pipeline</span>
+                    </div>
+                </div>
+                <div class="reveal reveal-delay-3">
+                    <p style="font-size:var(--small-size);color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">数据层</p>
+                    <div class="arch-row">
+                        <span class="arch-box">localStorage</span>
+                        <span class="arch-box">IndexedDB</span>
+                        <span class="arch-box">Flask 后端</span>
+                    </div>
+                </div>
+            </div>
+            <div class="split-right">
+                <div class="code-block reveal reveal-delay-4">
+                    <span class="comment">// 状态管理架构</span><br>
+                    <span class="keyword">App.vue</span> → 统一状态中心<br>
+                    ├── 工作台卡片<br>
+                    ├── 知识库列表<br>
+                    ├── 对话消息<br>
+                    ├── 任务列表<br>
+                    └── 设置项<br><br>
+                    <span class="comment">// 持久化机制</span><br>
+                    <span class="keyword">usePersistentState</span> → <span class="string">localStorage</span><br>
+                    <span class="func">IndexedDB</span> → 向量存储
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 8: HIGHLIGHTS & STATS
+     ======================================== -->
+<section class="slide" id="slide-8">
+    <span class="section-number decorative">07</span>
+    <div class="blob blob-orange decorative" style="width:350px;height:350px;bottom:-100px;left:-80px;"></div>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">项目亮点</h2>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));margin-top:var(--content-gap);">
+            <div class="surface-card reveal reveal-delay-1" style="text-align:center;">
+                <div style="font-size:clamp(2rem,4vw,3rem);margin-bottom:0.4rem;">🎯</div>
+                <div style="font-weight:700;font-size:var(--h3-size);margin-bottom:0.3rem;">定位明确</div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.4;">面向学习与答辩场景的 AI 工作台，非通用聊天工具</p>
+            </div>
+            <div class="surface-card reveal reveal-delay-2" style="text-align:center;">
+                <div style="font-size:clamp(2rem,4vw,3rem);margin-bottom:0.4rem;">🧩</div>
+                <div style="font-weight:700;font-size:var(--h3-size);margin-bottom:0.3rem;">结构完整</div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.4;">总览 / 工作台 / 知识库 / 问答 / 任务 / 设置六大模块</p>
+            </div>
+            <div class="surface-card reveal reveal-delay-3" style="text-align:center;">
+                <div style="font-size:clamp(2rem,4vw,3rem);margin-bottom:0.4rem;">📚</div>
+                <div style="font-weight:700;font-size:var(--h3-size);margin-bottom:0.3rem;">RAG 链路</div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.4;">文档→分块→嵌入→存储→检索→增强回答，完整闭环</p>
+            </div>
+            <div class="surface-card reveal reveal-delay-4" style="text-align:center;">
+                <div style="font-size:clamp(2rem,4vw,3rem);margin-bottom:0.4rem;">🤖</div>
+                <div style="font-weight:700;font-size:var(--h3-size);margin-bottom:0.3rem;">11 种 AI 技能</div>
+                <p style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.4;">覆盖设计 / 规划 / 创作等领域，双源问答 + 流式输出</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 9: FUTURE
+     ======================================== -->
+<section class="slide" id="slide-9">
+    <span class="section-number decorative">08</span>
+    <div class="slide-content">
+        <h2 class="section-heading reveal">不足与改进方向</h2>
+        <div class="split-layout" style="margin-top:var(--content-gap);">
+            <div class="split-left">
+                <h3 class="reveal reveal-delay-1" style="font-size:var(--h3-size);color:var(--accent-orange);margin-bottom:clamp(0.5rem,1vh,1rem);font-weight:700;">当前不足</h3>
+                <div style="display:flex;flex-direction:column;gap:clamp(0.4rem,0.8vh,0.7rem);">
+                    <div class="improve-card reveal reveal-delay-2">
+                        <span class="num">01</span>
+                        <span class="text"><strong>前端原型阶段</strong>，未接入真实后端数据库</span>
+                    </div>
+                    <div class="improve-card reveal reveal-delay-3">
+                        <span class="num">02</span>
+                        <span class="text"><strong>文件解析与大模型调用</strong>仍为演示逻辑</span>
+                    </div>
+                    <div class="improve-card reveal reveal-delay-4">
+                        <span class="num">03</span>
+                        <span class="text"><strong>多人协作</strong>与实时同步尚未正式实现</span>
+                    </div>
+                </div>
+            </div>
+            <div class="split-right">
+                <h3 class="reveal reveal-delay-2" style="font-size:var(--h3-size);color:var(--accent-green);margin-bottom:clamp(0.5rem,1vh,1rem);font-weight:700;">改进方向</h3>
+                <ul class="bullet-list reveal reveal-delay-3">
+                    <li>接入后端数据库与用户系统</li>
+                    <li>真实文件解析 · OCR · 语音转写</li>
+                    <li>向量检索与真实 RAG 问答</li>
+                    <li>多端同步与 Agent 智能体</li>
+                    <li>微信 / 腾讯文档生态接入</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     SLIDE 10: END
+     ======================================== -->
+<section class="slide" id="slide-10">
+    <div class="blob blob-orange decorative" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div class="slide-content" style="align-items:center;text-align:center;">
+        <div class="reveal">
+            <div class="glow-ring" style="margin:0 auto clamp(1rem,3vh,1.5rem);">🎓</div>
+        </div>
+        <h2 class="reveal reveal-delay-1" style="font-family:var(--font-display);font-size:var(--title-size);font-weight:900;line-height:1.2;">
+            感谢聆听
+        </h2>
+        <p class="reveal reveal-delay-2 gradient-text" style="font-size:var(--h3-size);font-weight:600;margin-top:clamp(0.5rem,1.5vh,1rem);">
+            智途 AI 助手
+        </p>
+        <p class="reveal reveal-delay-3 end-cta">
+            欢迎提问与交流
+        </p>
+        <div class="reveal reveal-delay-4" style="margin-top:clamp(1rem,3vh,2rem);display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <a href="https://su11-by.github.io/zhitu-ai-assistant/" target="_blank" style="color:var(--accent-cyan);font-size:var(--small-size);text-decoration:none;border:1px solid var(--accent-cyan);padding:0.4em 1em;border-radius:6px;transition:background 0.3s;">🔗 在线演示</a>
+            <a href="https://github.com/su11-By/zhitu-ai-assistant" target="_blank" style="color:var(--text-secondary);font-size:var(--small-size);text-decoration:none;border:1px solid var(--border-subtle);padding:0.4em 1em;border-radius:6px;transition:background 0.3s;">📦 GitHub 仓库</a>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================
+     JAVASCRIPT: Navigation & Animations
+     ======================================== -->
+<script>
+(function() {
+    'use strict';
+
+    // --- Slide Navigation Controller ---
+    class SlideController {
+        constructor() {
+            this.slides = document.querySelectorAll('.slide');
+            this.currentIndex = 0;
+            this.isScrolling = false;
+            this.scrollCooldown = 800;
+
+            this.init();
+        }
+
+        init() {
+            this.createNavDots();
+            this.bindKeyboard();
+            this.bindWheel();
+            this.bindTouch();
+            this.setupIntersectionObserver();
+            this.updateProgress();
+        }
+
+        createNavDots() {
+            const nav = document.getElementById('navDots');
+            this.slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', `跳转到第 ${i + 1} 页`);
+                dot.addEventListener('click', () => this.goTo(i));
+                nav.appendChild(dot);
+            });
+            this.dots = nav.querySelectorAll('.nav-dot');
+        }
+
+        goTo(index) {
+            if (index < 0 || index >= this.slides.length) return;
+            this.currentIndex = index;
+            this.slides[index].scrollIntoView({ behavior: 'smooth' });
+            this.updateDots();
+            this.updateProgress();
+        }
+
+        updateDots() {
+            this.dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === this.currentIndex);
+            });
+        }
+
+        updateProgress() {
+            const bar = document.getElementById('progressBar');
+            const pct = ((this.currentIndex + 1) / this.slides.length) * 100;
+            bar.style.width = pct + '%';
+        }
+
+        bindKeyboard() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+                    e.preventDefault();
+                    this.goTo(this.currentIndex + 1);
+                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    this.goTo(this.currentIndex - 1);
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    this.goTo(0);
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    this.goTo(this.slides.length - 1);
+                }
+            });
+        }
+
+        bindWheel() {
+            let lastWheel = 0;
+            document.addEventListener('wheel', (e) => {
+                const now = Date.now();
+                if (now - lastWheel < this.scrollCooldown) return;
+                lastWheel = now;
+
+                if (e.deltaY > 0) {
+                    this.goTo(this.currentIndex + 1);
+                } else if (e.deltaY < 0) {
+                    this.goTo(this.currentIndex - 1);
+                }
+            }, { passive: true });
+        }
+
+        bindTouch() {
+            let startY = 0;
+            let startX = 0;
+            document.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                const dy = startY - e.changedTouches[0].clientY;
+                const dx = startX - e.changedTouches[0].clientX;
+                if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+                    if (dy > 0) this.goTo(this.currentIndex + 1);
+                    else this.goTo(this.currentIndex - 1);
+                }
+            }, { passive: true });
+        }
+
+        setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const idx = Array.from(this.slides).indexOf(entry.target);
+                        if (idx !== -1) {
+                            this.currentIndex = idx;
+                            this.updateDots();
+                            this.updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            this.slides.forEach(slide => observer.observe(slide));
+        }
+    }
+
+    // --- Reveal Animation Observer ---
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // --- Init ---
+    new SlideController();
+
+})();
+</script>
+</body>
+</html>
